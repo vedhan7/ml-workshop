@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Demand Forecasting</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>Energy Forecast</h1>
+            </div>
+            <nav class="nav">
+                <a href="#dashboard" class="nav-link active">Dashboard</a>
+                <a href="#forecast" class="nav-link">Forecast</a>
+                <a href="#history" class="nav-link">History</a>
+                <a href="#settings" class="nav-link">Settings</a>
+            </nav>
+            <div class="header-status">
+                <span class="status-dot"></span>
+                <span id="system-status">System Active</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section with Key Metrics -->
+        <section class="hero-section">
+            <div class="hero-text">
+                <h2>Electricity Demand Predictions</h2>
+                <p>AI-powered forecasts to help you plan energy consumption</p>
+            </div>
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <span class="stat-icon">📊</span>
+                    <div class="stat-info">
+                        <span class="stat-value" id="current-demand">--</span>
+                        <span class="stat-label">Current Demand (kWh)</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">🔮</span>
+                    <div class="stat-info">
+                        <span class="stat-value" id="next-hour-prediction">--</span>
+                        <span class="stat-label">Next Hour Prediction</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">📈</span>
+                    <div class="stat-info">
+                        <span class="stat-value" id="daily-peak">--</span>
+                        <span class="stat-label">Today's Peak</span>
+                    </div>
+                </div>
+                <div class="stat-card" title="Calculated as 100% - Mean Absolute Percentage Error (MAPE)">
+                    <span class="stat-icon">🎯</span>
+                    <div class="stat-info">
+                        <span class="stat-value" id="accuracy">--</span>
+                        <span class="stat-label">Model Accuracy</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Forecast Chart Section -->
+        <section class="chart-section" id="forecast">
+            <div class="section-header">
+                <h3>📈 24-Hour Forecast</h3>
+                <div class="time-selector">
+                    <button class="time-btn active" data-hours="24">Next 24 Hours</button>
+                    <button class="time-btn" data-hours="168">Next Week</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="forecastChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #6366f1;"></span>
+                    <span>Predicted Demand</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: rgba(99, 102, 241, 0.2);"></span>
+                    <span>Confidence Range</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights Section -->
+        <section class="insights-section">
+            <h3>💡 Smart Insights</h3>
+            <div class="insights-grid">
+                <div class="insight-card peak">
+                    <div class="insight-icon">🌡️</div>
+                    <div class="insight-content">
+                        <h4>Peak Hours Today</h4>
+                        <p id="peak-hours">Expected between <strong>5 PM - 9 PM</strong></p>
+                        <span class="insight-tip">Consider shifting non-essential usage</span>
+                    </div>
+                </div>
+                <div class="insight-card savings">
+                    <div class="insight-icon">💰</div>
+                    <div class="insight-content">
+                        <h4>Best Time to Save</h4>
+                        <p id="best-time">Lowest demand: <strong>2 AM - 5 AM</strong></p>
+                        <span class="insight-tip">Great for scheduled tasks</span>
+                    </div>
+                </div>
+                <div class="insight-card trend">
+                    <div class="insight-icon">📊</div>
+                    <div class="insight-content">
+                        <h4>Weekly Trend</h4>
+                        <p id="weekly-trend">Demand is <strong>5% higher</strong> than last week</p>
+                        <span class="insight-tip">Likely due to weather changes</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Model Status Section -->
+        <section class="model-section" id="settings">
+            <h3>🤖 AI Model Status</h3>
+            <div class="model-grid">
+                <div class="model-card active-model">
+                    <div class="model-header">
+                        <span class="model-badge">Active</span>
+                        <h4 id="model-name">Loading...</h4>
+                    </div>
+                    <div class="model-stats">
+                        <div class="model-stat">
+                            <span class="label">Accuracy</span>
+                            <span class="value" id="model-accuracy">--</span>
+                        </div>
+                        <div class="model-stat">
+                            <span class="label">Last Trained</span>
+                            <span class="value" id="model-trained">--</span>
+                        </div>
+                        <div class="model-stat">
+                            <span class="label">Predictions Made</span>
+                            <span class="value" id="predictions-count">--</span>
+                        </div>
+                    </div>
+                    <button class="btn-retrain" onclick="triggerRetrain()">
+                        🔄 Retrain Model
+                    </button>
+                </div>
+                <div class="data-status-card">
+                    <h4>📁 Data Status</h4>
+                    <div class="data-stats">
+                        <div class="data-stat">
+                            <span class="data-value" id="total-records">--</span>
+                            <span class="data-label">Total Records</span>
+                        </div>
+                        <div class="data-stat">
+                            <span class="data-value" id="data-days">--</span>
+                            <span class="data-label">Days of Data</span>
+                        </div>
+                        <div class="data-stat">
+                            <span class="data-value" id="latest-update">--</span>
+                            <span class="data-label">Last Update</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Energy Forecast System • Powered by AI • Last updated: <span id="last-updated">--</span></p>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <span id="toast-message"></span>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+# Core Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+polars>=0.20.0
+
+# Machine Learning
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+lightgbm>=4.0.0
+prophet>=1.1.0
+optuna>=3.4.0
+
+# Time Series
+statsmodels>=0.14.0
+
+# API Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Database
+sqlalchemy>=2.0.0
+alembic>=1.13.0
+
+# Experiment Tracking
+mlflow>=2.10.0
+
+# Scheduling
+apscheduler>=3.10.0
+
+# HTTP Client (for weather API)
+httpx>=0.26.0
+
+# Logging & Monitoring
+structlog>=24.1.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.23.0
+
+# Development
+python-dotenv>=1.0.0

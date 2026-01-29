@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./data/electricity.db
+      - MODEL_DIR=./data/models
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Optional: PostgreSQL + TimescaleDB for production
+  # Uncomment below for production-grade database
+  # db:
+  #   image: timescale/timescaledb:latest-pg15
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_USER=forecast
+  #     - POSTGRES_PASSWORD=forecast_password
+  #     - POSTGRES_DB=electricity_forecast
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U forecast"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # Optional: MLflow tracking server
+  # mlflow:
+  #   image: python:3.11-slim
+  #   ports:
+  #     - "5000:5000"
+  #   command: >
+  #     bash -c "pip install mlflow &&
+  #     mlflow server --host 0.0.0.0 --port 5000
+  #     --backend-store-uri sqlite:///mlflow.db
+  #     --default-artifact-root ./mlruns"
+  #   volumes:
+  #     - mlflow_data:/mlruns
+
+# volumes:
+#   postgres_data:
+#   mlflow_data:
